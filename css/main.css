@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*,
+*:before,
+*:after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #f8f9fa;
+    color: #212529;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    max-width: 1140px;
+    margin: auto;
+    padding: 1rem;
+    flex-grow: 1;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -0.75rem;
+}
+
+.col {
+    padding: 0 0.75rem;
+    flex: 1;
+}
+
+.card-panel {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+blockquote {
+    border-left: 0.3em solid #007bff;
+    margin: 0 0 1rem;
+    padding-left: 0.8rem;
+}
+
+.canvas {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 20px;
+    height: 280px;
+    width: 280px;
+}
+
+.predictions {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+}
+
+.prediction-col {
+    padding: 0.5rem;
+    text-align: center;
+    cursor: default;
+}
+
+.prediction-bar-container {
+    background: #e9ecef;
+    border-radius: 20px;
+    height: 700px;
+    width: 10px;
+    position: relative;
+}
+
+.prediction-bar {
+    background: #6c757d;
+    border-radius: 20px;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    transition: height 0.3s ease;
+}
+
+.prediction-number {
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.top-prediction .prediction-bar {
+    background: #007bff;
+}
+
+.top-prediction .prediction-number {
+    color: #50a4ff;
+    font-weight: bold;
+}
+
+.button-pad {
+    margin-top: 10px;
+    text-align: center;
+}
+
+button, .btn {
+    background: #007bff;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    transition: 0.25s ease-in-out;
+}
+
+button:hover, .btn:hover {
+    background: #0056b3;
+    color: white;
+}
+
+/* Tablet */
+@media (max-width: 951px) {
+    .prediction-bar-container {
+        height: 200px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .canvas {
+        width: 100%;
+    }
+
+    .card-panel {
+        width: max-content;
+    }
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #343a40;
+        color: #f8f9fa;
+    }
+
+    .card-panel {
+        background: #495057;
+        color: #f8f9fa;
+    }
+
+    .canvas {
+        background: #495057;
+        border: 1px solid #6c757d;
+    }
+
+    blockquote {
+        border-left: 0.3em solid #66b2ff;
+        color: #f8f9fa;
+    }
+
+    .prediction-bar {
+        background: #adb5bd;
+    }
+
+    .top-prediction .prediction-bar {
+        background: #66b2ff;
+    }
+
+    .button-pad button, .button-pad .btn {
+        background: #66b2ff;
+        color: white;
+    }
+
+    button:hover, .btn:hover {
+        background: #3399cc;
+    }
+}
