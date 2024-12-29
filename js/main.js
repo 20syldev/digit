@@ -1,10 +1,17 @@
+/**
+ * Neural network activation and utility functions
+ */
+
+// Rectified Linear Unit (ReLU) activation function
 const relu = (x) => Math.max(0, x);
 
+// Softmax activation function for output normalization
 const softmax = (x) => {
     const sum = x.reduce((acc, val) => acc + val, 0);
     return x.map((val) => val / sum);
 };
 
+// Dense layer implementation with optional activation
 const dense = (input, weights, biases, activation = relu) =>
     biases.map((bias, index) =>
         activation(
@@ -15,6 +22,7 @@ const dense = (input, weights, biases, activation = relu) =>
         )
     );
 
+// Predict function chaining multiple layers
 const predict = (input) => {
     let output = dense(input, W1, B1);
     output = dense(output, W2, B2);
@@ -22,6 +30,11 @@ const predict = (input) => {
     return softmax(output);
 };
 
+/**
+ * Image preprocessing functions
+ */
+
+// Convert image data to grayscale
 const imageDataToGrayscale = (imgData) => {
     const grayscaleImg = [];
     for (let y = 0; y < imgData.height; y++) {
@@ -35,6 +48,7 @@ const imageDataToGrayscale = (imgData) => {
     return grayscaleImg;
 };
 
+// Reduce image to 28x28 resolution
 const reduceImage = (img) => {
     const reducedSize = 28;
     const blockSize = img.length / reducedSize;
@@ -56,6 +70,7 @@ const reduceImage = (img) => {
     return reducedImg;
 };
 
+// Calculate shift for centralizing the image
 const getShift = (arr) => {
     const sumCoordinates = arr.reduce(
         (acc, row, x) =>
@@ -78,6 +93,7 @@ const getShift = (arr) => {
         : [0, 0];
 };
 
+// Centralize the image around its center of mass
 const centralize = (arr) => {
     const [dx, dy] = getShift(arr);
     return arr.map((row, x) =>
@@ -89,7 +105,12 @@ const centralize = (arr) => {
     );
 };
 
+// Flatten a 2D array into a 1D array
 const flatten = (arr) => arr.flat();
+
+/**
+ * Canvas setup and event listeners
+ */
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -102,6 +123,7 @@ let isMouseDown = false;
 let lastX = 0;
 let lastY = 0;
 
+// Set up canvas drawing settings
 const setupCanvas = () => {
     ctx.lineWidth = 14;
     ctx.lineJoin = "round";
@@ -112,6 +134,7 @@ const setupCanvas = () => {
     ctx.strokeStyle = "#212121";
 };
 
+// Clear the canvas and reset predictions
 const clearCanvas = () => {
     ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     for (let i = 0; i < 10; i++) {
@@ -121,6 +144,7 @@ const clearCanvas = () => {
     }
 };
 
+// Draw a line on the canvas
 const drawLine = (fromX, fromY, toX, toY) => {
     ctx.beginPath();
     ctx.moveTo(fromX, fromY);
@@ -129,6 +153,7 @@ const drawLine = (fromX, fromY, toX, toY) => {
     ctx.stroke();
 };
 
+// Update predictions based on the canvas drawing
 const updatePredictions = async () => {
     const imgData = ctx.getImageData(0, 0, CANVAS_SIZE, CANVAS_SIZE);
     const grayscaleImg = imageDataToGrayscale(imgData);
@@ -147,6 +172,7 @@ const updatePredictions = async () => {
     }
 };
 
+// Mouse event handlers
 const handleMouseDown = (event) => {
     isMouseDown = true;
     lastX = event.offsetX / CANVAS_SCALE;
@@ -176,6 +202,38 @@ const handleMouseOut = (event) => {
     }
 };
 
+// Touch event handlers
+const getTouchPos = (event) => {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: (event.touches[0].clientX - rect.left) / CANVAS_SCALE,
+        y: (event.touches[0].clientY - rect.top) / CANVAS_SCALE,
+    };
+};
+
+const handleTouchStart = (event) => {
+    event.preventDefault();
+    isMouseDown = true;
+    const pos = getTouchPos(event);
+    lastX = pos.x;
+    lastY = pos.y;
+};
+
+const handleTouchMove = (event) => {
+    if (!isMouseDown) return;
+    event.preventDefault();
+    const pos = getTouchPos(event);
+    drawLine(lastX, lastY, pos.x, pos.y);
+    lastX = pos.x;
+    lastY = pos.y;
+};
+
+const handleTouchEnd = () => {
+    isMouseDown = false;
+    updatePredictions();
+};
+
+// Initialize the canvas and set event listeners
 setupCanvas();
 
 canvas.addEventListener("mousedown", handleMouseDown);
@@ -183,3 +241,7 @@ canvas.addEventListener("mousemove", handleMouseMove);
 document.addEventListener("mouseup", handleMouseUp);
 document.addEventListener("mouseout", handleMouseOut);
 clearButton.addEventListener("click", clearCanvas);
+
+canvas.addEventListener("touchstart", handleTouchStart);
+canvas.addEventListener("touchmove", handleTouchMove);
+document.addEventListener("touchend", handleTouchEnd);
